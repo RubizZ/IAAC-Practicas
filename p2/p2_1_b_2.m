@@ -1,4 +1,4 @@
-%% 2.b)
+%% 2.1.b)
 tSis = out.ScopeData{1}.Values.Time;
 ySis = out.ScopeData{1}.Values.Data;
 

@@ -1,7 +1,4 @@
-%% 2.a)
-%Simulink.sdi.internal.openVariable('out', out)
-
-%% 2.b)
+%% 2.1.b)
 t = out.ScopeData{1}.Values.Time;
 y = out.ScopeData{1}.Values.Data;
 
