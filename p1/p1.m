@@ -1,0 +1,150 @@
+%% PREDICTOR DE TEMPERATURA MEDIA POR MES DE MADRID
+% Este script genera un modelo de fourier a partir de datos reales de
+% temperaturas de madrid y hace predicciones a partir del modelo
+
+%% Carga de datos
+
+% Carga los datos desde la tabla de temperaturas (transformada a 3 columnas
+% (Mes, Anyo, Valor) para facil lectura en Matlab)
+datos = readtable('temperaturas_transformadas.csv');
+datos = rmmissing(datos);
+
+% Convierte las fechas a un valor numerico para poder graficar y modelar
+X = (datos.Anyo - 1985) * 12 + datos.Mes;  % Número de meses desde Enero de 1985
+
+% Asigna las temperaturas a Y
+Y = datos.Valor;
+
+%% Creacion del modelo
+
+% Crea el modelo de temperaturas
+[fitresult, gof] = createFit(X,Y);
+
+%% Verificación del modelo
+disp('Goodness of fit:');
+disp(gof);
+
+%% Pide los meses a predecir
+meses_a_predecir = input('Cuantos meses quieres predecir? (Escribe un numero de meses): ');
+
+%% Graficación de los datos y el modelo
+
+figure;
+
+% Grafica el modelo junto con los datos
+plot(fitresult, X, Y);
+
+hold on;
+
+% Crea todas las fechas de las que hay datos (siendo dia 51 por poner algo
+% ya que las temperaturas son la media de cada mes)
+fechas_datos = datetime(datos.Anyo, datos.Mes, 15);
+
+% Genera los meses futuros después del último mes registrado en los datos
+% Incluye el ultimo mes que tiene datos para que la grafica sea continua
+meses_futuros = (max(X)+(0 : meses_a_predecir))'; % Convertir en vector columna
+predicciones_futuras = feval(fitresult, meses_futuros);  % Evaluar el modelo en esos meses futuros
+
+% Crea las fechas correspondientes a los meses futuros
+fechas_futuras = min(fechas_datos) + calmonths(meses_futuros - 2);
+
+% Une las fechas con datos y las futuras
+X_total = [X(:); meses_futuros];
+fechas_total = [fechas_datos; fechas_futuras];
+Y_total = [Y; predicciones_futuras];
+
+% Grafica las predicciones en rojo
+plot(meses_futuros, predicciones_futuras, '-r', 'DisplayName', 'Predicciones Futuras');
+
+% Genera los ticks a partir de las fechas
+
+% Se obtienen el inicio y el final
+primer_anyo = year(fechas_total(1));
+ultimo_anyo = year(fechas_total(end));
+
+% Genera fechas en enero de cada año dentro del rango
+fechas_ticks = datetime(primer_anyo:ultimo_anyo, 1, 1);  % Enero de cada año
+
+% Convierte esas fechas en valores de X para los ticks
+X_ticks = years(fechas_ticks - min(fechas_datos)) * 12 + 1;
+
+% Ajusta los ticks del eje X
+xticks(X_ticks);
+
+% Ajusta las etiquetas del eje X para que muestren Mes-Año
+xticklabels(datestr(fechas_ticks, 'mmm-yyyy'));
+
+% Las gira para mejor lectura
+xtickangle(45);
+
+% Amplia los límites del eje X para incluir las predicciones
+xlim([min(X_total) max(X_total)]);
+
+% Se añaden las etiquetas y el titulo
+xlabel('Mes-Año');
+ylabel('Temperatura (°C)');
+title('Modelo de Temperatura Media de Madrid');
+
+grid on;
+hold off;
+
+% Mostrar la leyenda
+legend({'Datos Históricos', 'Modelo', 'Predicciones Futuras'}, 'Location', 'Best');
+
+% Cambia lo que se muestra al pasar el cursor por encima
+dcm = datacursormode(gcf);
+set(dcm, 'UpdateFcn', @(obj, event) mostrarFecha(event, X_total, fechas_total, fitresult, X, Y));
+
+% Función para mostrar la fecha en el data cursor
+function txt = mostrarFecha(event, X_total, fechas_total, fitresult, X, Y)
+    % Encontrar el índice del punto más cercano en X_total
+    [~, idx] = min(abs(X_total - event.Position(1)));  % Encuentra el índice más cercano
+    
+    % Si el índice está dentro de los datos históricos (X <= max(X)), se trata de un dato histórico
+    if idx <= length(X)
+        % Obtener la fecha y la temperatura real (de los datos históricos)
+        fecha_str = datestr(fechas_total(idx), 'mmm-yyyy');  % Formato Día-Mes-Año
+        temperatura_real = Y(idx);  % Temperatura real de los datos históricos
+        temperatura_modelo = feval(fitresult, X_total(idx));  % Temperatura calculada por el modelo para ese mes
+        txt = {sprintf('Fecha: %s', fecha_str), ...
+               sprintf('Temperatura Real: %.2f°C', temperatura_real), ...
+               sprintf('Temperatura Modelo: %.2f°C', temperatura_modelo)};
+    else
+        % Si el índice está en la predicción (X > max(X)), se trata de un valor de la curva ajustada
+        % Obtener la fecha de la predicción y la temperatura predicha por el modelo
+        fecha_str = datestr(fechas_total(idx), 'mmm-yyyy');  % Formato Día-Mes-Año
+        temperatura_predicha = feval(fitresult, X_total(idx));  % Temperatura predicha por el modelo
+        txt = {sprintf('Fecha: %s', fecha_str), ...
+               sprintf('Temperatura Predicha: %.2f°C', temperatura_predicha)};
+    end
+end
+
+function [fitresult, gof] = createFit(X, Y)
+%CREATEFIT(X,Y)
+%  Create a fit.
+%
+%  Data for 'untitled fit 1' fit:
+%      X Input: X
+%      Y Output: Y
+%  Output:
+%      fitresult : a fit object representing the fit.
+%      gof : structure with goodness-of fit info.
+%
+%  See also FIT, CFIT, SFIT.
+
+%  Auto-generated by MATLAB on 18-Feb-2025 12:20:19
+
+
+%% Fit: 'untitled fit 1'.
+[xData, yData] = prepareCurveData( X, Y );
+
+% Set up fittype and options.
+ft = fittype( 'fourier8' );
+opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
+opts.Display = 'Off';
+opts.StartPoint = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.0759297318088168];
+
+% Fit model to data.
+[fitresult, gof] = fit( xData, yData, ft, opts );
+
+end
