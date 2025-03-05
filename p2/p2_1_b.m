@@ -13,8 +13,8 @@ plot(t, y, 'b', 'LineWidth', 2);
 hold on;
 yline(K, 'r--', 'LineWidth', 2);  
 text(t(end)*0.01, max(y) + max(y) / 20, sprintf('  K = %.4f', K), 'FontSize', 12, 'Color', 'red');
-plot(To_X, y(To_Y), 'ro', 'MarkerSize', 8, 'LineWidth', 2); % Punto Td
-plot(Tp_X, y(Tp_Y), 'go', 'MarkerSize', 8, 'LineWidth', 2); % Punto τ
+plot(To_X, y(To_Y), 'ro', 'MarkerSize', 8, 'LineWidth', 2); % Punto To
+plot(Tp_X, y(Tp_Y), 'go', 'MarkerSize', 8, 'LineWidth', 2); % Punto Tp
 xlabel('Tiempo (s)');
 ylabel('Salida');
 title('Grafica del modelo sistema planta = 1');

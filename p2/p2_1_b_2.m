@@ -10,8 +10,8 @@ plot(tSis, ySis, 'b', 'LineWidth', 2); hold on;
 plot(tPO, yPO, 'r--', 'LineWidth', 2);
 xlabel('Tiempo (s)');
 ylabel('Salida');
-title('Comparación de la Respuesta del Sistema Real y el Modelo Ajustado');
-legend('Sistema Real', 'Modelo Ajustado');
+title('Comparación');
+legend('Sistema Real', 'Primer Orden');
 grid on;
 
 clear("out");

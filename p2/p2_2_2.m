@@ -14,7 +14,6 @@ fprintf('Ganancia crítica PID (Ku) = %.4e\n', Ku_pid);
 dydt = diff(y);  % Diferencia de la señal
 pks_locs = find(dydt(1:end-1) > 0 & dydt(2:end) < 0) + 1; % Picos (donde la derivada cambia de positiva a negativa)
 
-% Calcular el periodo crítico (Tu) como la diferencia de tiempo entre dos picos sucesivos
 Tu = mean(diff(t(pks_locs)));  % Promedio de los intervalos entre los picos
 fprintf('Periodo crítico (Tu) = %.2f\n', Tu);
 
@@ -33,8 +32,4 @@ Kd_pid = Kp_pid * Td_pid;
 
 fprintf('P: Kp = %.3f\n', Kp_p);
 fprintf('PI: Kp = %.3f, Ki = %.3f\n', Kp_pi, Ki_pi);
-fprintf('PID: Kp = %.3f, Ki = %.3f, Kd = %.3f\n', Kp_pid, Ki_pid, Kd_pid);
-
-%% Resultados
-
-% P -> 
+fprintf('PID: Kp = %.3f, Ki = %.3f, Kd = %.3f\n', Kp_pid, Ki_pid, Kd_pid); 
