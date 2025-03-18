@@ -42,7 +42,7 @@
   %Ki = Ki * 1.1;
 
   % Cambios en Kd
-  Kd = Kd * 1.1;
+  %Kd = Kd * 1.1;
 
 % FIN APARTADO 1 (continua en caracteristicas)
 
@@ -78,6 +78,7 @@
   % Ki aumenta:
   % - Aumenta: tp, Mp
   % - Disminuye: tr, ts
+  % - Disminuye error estacionario de yss
 
   % Ki disminuye: contrario que si aumenta
 
