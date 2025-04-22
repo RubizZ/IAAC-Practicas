@@ -1,0 +1,50 @@
+[System]
+Name='pid_fuzzy_4'
+Type='mamdani'
+Version=2.0
+NumInputs=3
+NumOutputs=1
+NumRules=8
+AndMethod='min'
+OrMethod='max'
+ImpMethod='min'
+AggMethod='max'
+DefuzzMethod='centroid'
+
+[Input1]
+Name='e'
+Range=[-1 1]
+NumMFs=2
+MF1='n':'trimf',[-1 -1 1]
+MF2='p':'trimf',[-1 1 1]
+
+[Input2]
+Name='ie'
+Range=[-11 11]
+NumMFs=2
+MF1='n':'trimf',[-11 -11 11]
+MF2='p':'trimf',[-11 11 11]
+
+[Input3]
+Name='de'
+Range=[-0.2 0.2]
+NumMFs=2
+MF1='n':'trimf',[-0.2 -0.2 0.2]
+MF2='p':'trimf',[-0.2 0.2 0.2]
+
+[Output1]
+Name='u'
+Range=[-1 1]
+NumMFs=2
+MF1='n':'trimf',[-1 -1 1]
+MF2='p':'trimf',[-1 1 1]
+
+[Rules]
+1 1 1, 1 (1) : 1
+1 2 1, 1 (1) : 1
+1 1 2, 1 (1) : 1
+1 2 2, 2 (1) : 1
+2 1 1, 1 (1) : 1
+2 2 1, 2 (1) : 1
+2 1 2, 2 (1) : 1
+2 2 2, 2 (1) : 1
